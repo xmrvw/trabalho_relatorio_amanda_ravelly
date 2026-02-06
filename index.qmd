@@ -1,0 +1,64 @@
+---
+title: "Evolução do Rendimento Médio Mensal Real no Brasil"
+subtitle: "Análise exploratória a partir da PNAD Contínua (IBGE)"
+author: "Amanda Ravelly"
+format: html
+editor: visual
+toc: true
+toc-depth: 3
+execute: 
+  echo: fenced
+---
+
+## Introdução
+
+O rendimento médio mensal real é um dos principais indicadores utilizados para avaliar as condições econômicas da população ocupada no Brasil. Sua evolução ao longo do tempo reflete mudanças no mercado de trabalho, no nível de atividade econômica e no contexto institucional do país.
+
+Este relatório apresenta uma análise descritiva e exploratória da evolução do rendimento médio mensal real no Brasil, a partir de dados da PNAD Contínua, produzida pelo Instituto Brasileiro de Geografia e Estatística (IBGE). O objetivo é comunicar os principais padrões observados na série temporal de forma clara, acessível e reprodutível.
+
+Os dados utilizados estão disponíveis publicamente na plataforma SIDRA – IBGE <https://sidra.ibge.gov.br/home/pimpfbr/brasil>.
+
+## Dados e metodologia
+
+Os dados foram obtidos por meio da PNAD Contínua, utilizando a plataforma SIDRA. O período analisado compreende os anos de 2012 a 2026, com valores expressos em termos reais, deflacionados para preços constantes.
+
+O processo metodológico envolveu:
+
+seleção da tabela SIDRA correspondente ao rendimento médio mensal;
+
+organização da série temporal;
+
+tratamento e padronização dos valores monetários;
+
+construção de visualizações para análise exploratória.
+
+Esta análise possui caráter descritivo, não buscando estabelecer relações de causalidade, mas sim identificar tendências e oscilações relevantes ao longo do tempo.
+
+## Resultados
+
+Tabela resumo
+
+```{r}
+1 + 1
+```
+
+A tabela acima apresenta valores selecionados do rendimento médio mensal real, permitindo uma comparação objetiva entre períodos específicos da série.
+
+### Evolução temporal do rendimento médio
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+O gráfico permite observar oscilações relevantes ao longo do período analisado, incluindo momentos de estagnação, queda e recuperação do rendimento médio real.
+
+## Contextualização dos resultados
+
+A trajetória do rendimento médio mensal real apresenta variações compatíveis com diferentes contextos econômicos enfrentados pelo país ao longo do período analisado. Destacam-se, entre outros fatores, a recessão observada a partir de meados da década de 2010, os efeitos da pandemia de COVID-19 sobre o mercado de trabalho e o movimento de recuperação econômica nos anos mais recentes.
+
+Embora seja possível associar visualmente determinados pontos da série a eventos específicos, esta análise não permite inferir causalidade direta, devendo ser interpretada como um exercício de leitura descritiva dos dados.
+
+## Visualização complementar
+
+A figura abaixo apresenta uma visualização complementar do comportamento do rendimento médio mensal real no Brasil.
