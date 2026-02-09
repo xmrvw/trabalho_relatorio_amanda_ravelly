@@ -4,6 +4,7 @@ subtitle: "Análise exploratória a partir da PNAD Contínua (IBGE)"
 author: "Amanda Ravelly"
 format: html
 editor: visual
+theme: cosmo
 toc: true
 toc-depth: 3
 execute: 
@@ -12,13 +13,12 @@ execute:
 
 ## Introdução
 
-O rendimento médio mensal real é um dos principais indicadores utilizados para avaliar as condições econômicas da população ocupada no Brasil. Sua evolução ao longo do tempo reflete mudanças no mercado de trabalho, no nível de atividade econômica e no contexto institucional do país.
+Este relatório apresenta uma análise exploratória a partir de **dados públicos brasileiros**, com o objetivo de demonstrar a construção de um relatório **reprodutível**, integrando texto, código e visualizações.
 
-Este relatório apresenta uma análise descritiva e exploratória da evolução do rendimento médio mensal real no Brasil, a partir de dados da PNAD Contínua, produzida pelo Instituto Brasileiro de Geografia e Estatística (IBGE). O objetivo é comunicar os principais padrões observados na série temporal de forma clara, acessível e reprodutível.
+O trabalho foi desenvolvido como parte do **Curso de Verão “Relatórios Reprodutíveis com R”**, ofertado pelo IME-USP, e utiliza o pacote **Quarto** como ferramenta principal para organização e publicação do conteúdo em formato web.
 
-Os dados utilizados estão disponíveis publicamente na plataforma SIDRA – IBGE <https://sidra.ibge.gov.br/home/pimpfbr/brasil>.
 
-## Dados e metodologia
+## Fonte dos dados
 
 Os dados foram obtidos por meio da PNAD Contínua, utilizando a plataforma SIDRA. O período analisado compreende os anos de 2012 a 2026, com valores expressos em termos reais, deflacionados para preços constantes.
 
@@ -34,24 +34,46 @@ construção de visualizações para análise exploratória.
 
 Esta análise possui caráter descritivo, não buscando estabelecer relações de causalidade, mas sim identificar tendências e oscilações relevantes ao longo do tempo.
 
-## Resultados
+## Importação dos dados
 
-Tabela resumo
+Nesta etapa, os dados são importados para o ambiente R e preparados para análise. O código abaixo realiza a leitura das bases e a organização inicial das variáveis de interesse.
 
-```{r}
-1 + 1
+Fonte: https://sidra.ibge.gov.br/tabela/6390
+Variável 5933 = Rendimento médio real habitualmente recebido (R$)
+
+Carregar pacotes
+
+```{r, eval=FALSE, echo=TRUE}
+library(dplyr)
+library(magrittr)
+library(lubridate)
+library(sidrar)
 ```
 
-A tabela acima apresenta valores selecionados do rendimento médio mensal real, permitindo uma comparação objetiva entre períodos específicos da série.
-
-### Evolução temporal do rendimento médio
-
-```{r}
-#| echo: false
-2 * 2
+Importando dados
+```{r, eval=FALSE, echo=TRUE}
+# base completa
+rendimentos <- get_sidra(api = "/t/6390/n1/all/v/5933/p/all")
 ```
 
-O gráfico permite observar oscilações relevantes ao longo do período analisado, incluindo momentos de estagnação, queda e recuperação do rendimento médio real.
+
+## Tratamento dos dados
+
+Após a importação, os dados passaram por procedimentos de limpeza e organização, incluindo seleção de variáveis, padronização de nomes e ajustes necessários para a análise.
+
+Essas etapas são fundamentais para garantir consistência e reprodutibilidade dos resultados apresentados a seguir.
+
+
+```{r, eval=FALSE, echo=TRUE}
+ mutate(
+    date = lubridate::parse_date(`Trimestre Móvel (Código)`, format = "%Y%m"),
+    Valor = as.numeric(Valor)
+  ) %>%
+  select(Valor, date)
+```
+## Análise exploratória
+
+
 
 ## Contextualização dos resultados
 
