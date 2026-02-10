@@ -2,35 +2,47 @@
 title: "Evolução do Rendimento Médio Mensal Real no Brasil"
 subtitle: "Análise exploratória a partir da PNAD Contínua (IBGE)"
 author: "Amanda Ravelly"
-format: html
-editor: visual
-theme: cosmo
-toc: true
-toc-depth: 3
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "Sumário"
+    toc-depth: 2
+    code-fold: false
+    code-tools: false
+    theme:
+      light: cosmo
+      dark: darkly
+      
 execute: 
-  echo: fenced
+  echo: true
+  warning: false
+  message: false
 ---
 
 ## Introdução
 
-Este relatório apresenta uma análise exploratória a partir de **dados públicos brasileiros**, com o objetivo de demonstrar a construção de um relatório **reprodutível**, integrando texto, código e visualizações.
+Este relatório apresenta uma análise exploratória da evolução do rendimento médio mensal real no Brasil, a partir de dados da **Pesquisa Nacional por Amostra de Domicílios Contínua** (PNAD Contínua), do IBGE.
 
-O trabalho foi desenvolvido como parte do **Curso de Verão “Relatórios Reprodutíveis com R”**, ofertado pelo IME-USP, e utiliza o pacote **Quarto** como ferramenta principal para organização e publicação do conteúdo em formato web.
+O objetivo é demonstrar, de forma descritiva, como esse indicador se comporta ao longo do tempo, utilizando um fluxo reprodutível que integra dados públicos, visualização e interpretação, sem a pretensão de estabelecer relações de causalidade.
 
+## Dados e fonte
 
-## Fonte dos dados
+Os dados utilizados foram obtidos por meio do Sistema IBGE de Recuperação Automática (SIDRA),
+correspondendo ao rendimento médio real habitualmente recebido,
+com valores deflacionados para preços constantes.
 
-Os dados foram obtidos por meio da PNAD Contínua, utilizando a plataforma SIDRA. O período analisado compreende os anos de 2012 a 2026, com valores expressos em termos reais, deflacionados para preços constantes.
+O período analisado compreende os anos disponíveis na base, conforme divulgação oficial do IBGE.
 
-O processo metodológico envolveu:
+  *O processo metodológico envolveu:*
 
-seleção da tabela SIDRA correspondente ao rendimento médio mensal;
+  - seleção da tabela SIDRA correspondente ao rendimento médio mensal;
 
-organização da série temporal;
+  - organização da série temporal;
 
-tratamento e padronização dos valores monetários;
+  - tratamento e padronização dos valores monetários;
 
-construção de visualizações para análise exploratória.
+  - construção de visualizações para análise exploratória.
 
 Esta análise possui caráter descritivo, não buscando estabelecer relações de causalidade, mas sim identificar tendências e oscilações relevantes ao longo do tempo.
 
@@ -38,49 +50,96 @@ Esta análise possui caráter descritivo, não buscando estabelecer relações d
 
 Nesta etapa, os dados são importados para o ambiente R e preparados para análise. O código abaixo realiza a leitura das bases e a organização inicial das variáveis de interesse.
 
-Fonte: https://sidra.ibge.gov.br/tabela/6390
-Variável 5933 = Rendimento médio real habitualmente recebido (R$)
+Carregando pacotes:
 
-Carregar pacotes
-
-```{r, eval=FALSE, echo=TRUE}
-library(dplyr)
-library(magrittr)
-library(lubridate)
+```{r}
+library(ggplot2)
 library(sidrar)
+library(tidyverse)
+library(scales)
+library(lubridate)
+library(DT)
+
 ```
 
-Importando dados
-```{r, eval=FALSE, echo=TRUE}
+### Acessando dados
+
+```{r}
 # base completa
-rendimentos <- get_sidra(api = "/t/6390/n1/all/v/5933/p/all")
+dados_brutos <- get_sidra(
+  api = "/t/6390/n1/all/v/5933/p/all"
+)
 ```
 
+### Tratamento dos dados
+
+```{r}
+rendimentos <- dados_brutos %>%
+  mutate(
+    date  = lubridate::ym(dados_brutos[[10]]),
+    Valor = as.numeric(dados_brutos[[5]])
+  ) %>%
+  select(Valor, date)
+```
+
+### Último valor e data mais recente
+
+```{r}
+ultimo_valor <- round(tail(rendimentos$Valor, 1), 1)
+ultima_data  <- tail(rendimentos$date, 1)
+```
+
+### Tabela interativa — **dados brutos (antes da limpeza)**
+
+A tabela abaixo apresenta um recorte dos dados conforme disponibilizados originalmente pelo IBGE, antes da realização de qualquer procedimento de tratamento ou organização.
+
+```{r}
+names(dados_brutos)
+datatable(
+  head(dados_brutos, 50),
+  options = list(
+    pageLength = 5,
+    scrollX = TRUE
+  ),
+  caption = "Dados originais da PNAD Continua / SIDRA (antes do tratamento)"
+)
+```
 
 ## Tratamento dos dados
 
 Após a importação, os dados passaram por procedimentos de limpeza e organização, incluindo seleção de variáveis, padronização de nomes e ajustes necessários para a análise.
 
-Essas etapas são fundamentais para garantir consistência e reprodutibilidade dos resultados apresentados a seguir.
-
-
-```{r, eval=FALSE, echo=TRUE}
- mutate(
-    date = lubridate::parse_date(`Trimestre Móvel (Código)`, format = "%Y%m"),
+```{r, code-fold: true}
+dados_tratados <- dados_brutos %>%
+  mutate(
+    date  = lubridate::ym(dados_brutos[[10]]),
     Valor = as.numeric(Valor)
   ) %>%
-  select(Valor, date)
+  select(date, Valor)
 ```
+
 ## Análise exploratória
 
+A Figura 1 apresenta a evolução do rendimento médio mensal real no Brasil ao longo do período analisado.
 
 
-## Contextualização dos resultados
+![](img/Rplot_rendimento_medio.png){width=100% fig-align="center"}
+
+
+## Resultados
 
 A trajetória do rendimento médio mensal real apresenta variações compatíveis com diferentes contextos econômicos enfrentados pelo país ao longo do período analisado. Destacam-se, entre outros fatores, a recessão observada a partir de meados da década de 2010, os efeitos da pandemia de COVID-19 sobre o mercado de trabalho e o movimento de recuperação econômica nos anos mais recentes.
 
 Embora seja possível associar visualmente determinados pontos da série a eventos específicos, esta análise não permite inferir causalidade direta, devendo ser interpretada como um exercício de leitura descritiva dos dados.
 
-## Visualização complementar
+## Referências e links
 
-A figura abaixo apresenta uma visualização complementar do comportamento do rendimento médio mensal real no Brasil.
+
+- **IBGE – PNAD Contínua**  
+  https://www.ibge.gov.br
+
+- **SIDRA – Tabela 6390 (Variável 5933)**  
+  https://sidra.ibge.gov.br/tabela/6390
+
+- **Código-fonte (GitHub)**  
+  https://github.com/xmrvw/trabalho_relatorio_amanda_ravelly
